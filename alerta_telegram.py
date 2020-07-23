@@ -11,16 +11,10 @@ import telepot
 from jinja2 import Template, UndefinedError
 
 DEFAULT_TMPL = """
-origin: [alerta]({{ DASHBOARD_URL }})
-severity: *{{ severity }}*
-status: *{{ status }}*
-customer: *{{customer}}*
-environment: *{{ environment }}*
-service: *{{ service }}*
-resource: *{{ resource }}*
-event: *{{ event | replace("_","\_") }}*
-value: *{{ value }}*
-attributes: *{{ attributes }}*
+{% if customer %}Customer: `{{customer}}` {% endif %}
+
+*[{{ status.capitalize() }}] {{ environment }} {{ severity.capitalize() }}*
+{{ event | replace("_","\_") }} {{ resource.capitalize() }}
 
 ```
 {{ text }}
