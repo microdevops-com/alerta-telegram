@@ -12,9 +12,15 @@ from jinja2 import Template, UndefinedError
 
 DEFAULT_TMPL = """
 origin: [alerta]({{ DASHBOARD_URL }})
-{%- if customer %}client: *{{customer}}*{% endif %}
-status: *[{{ status.capitalize() }}] {{ environment }} {{ severity.capitalize() }}*
-{{ event | replace("_","\_") }} {{ resource.capitalize() }}
+severity: *{{ severity }}*
+status: *{{ status }}*
+customer: *{{customer}}*
+environment: *{{ environment }}*
+service: *{{ service }}*
+resource: *{{ resource }}*
+event: *{{ event | replace("_","\_") }}*
+value: *{{ value }}*
+attributes: *{{ attributes }}*
 
 ```
 {{ text }}
