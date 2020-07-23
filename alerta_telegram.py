@@ -43,6 +43,8 @@ TELEGRAM_SOUND_NOTIFICATION_SEVERITY = app.config.get('TELEGRAM_SOUND_NOTIFICATI
 DASHBOARD_URL = app.config.get('DASHBOARD_URL', '') \
                 or os.environ.get('DASHBOARD_URL')
 
+TELEGRAM_CHAT_ID_PER_CUSTOMER = app.config.get('TELEGRAM_CHAT_ID_PER_CUSTOMER')
+
 # use all the same, but telepot.aio.api.set_proxy for async telepot
 if all([TELEGRAM_PROXY, TELEGRAM_PROXY_USERNAME, TELEGRAM_PROXY_PASSWORD]):
     telepot.api.set_proxy(
@@ -113,7 +115,11 @@ class TelegramBot(PluginBase):
         LOG.debug('Telegram: post_receive sendMessage disable_notification=%s', str(disable_notification))
 
         try:
-            response = self.bot.sendMessage(TELEGRAM_CHAT_ID,
+            if alert.customer in TELEGRAM_CHAT_ID_PER_CUSTOMER:
+                tg_chat_id = TELEGRAM_CHAT_ID_PER_CUSTOMER[alert.customer]
+            else:
+                tg_chat_id = TELEGRAM_CHAT_ID
+            response = self.bot.sendMessage(tg_chat_id,
                                             text,
                                             parse_mode='Markdown',
                                             disable_notification=disable_notification,
