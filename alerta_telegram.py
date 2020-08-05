@@ -78,7 +78,7 @@ class TelegramBot(PluginBase):
     def pre_receive(self, alert):
         return alert
 
-    def post_receive(self, alert):
+    def post_receive(self, alert, **kwargs):
 
         if alert.repeat:
             return
@@ -134,5 +134,5 @@ class TelegramBot(PluginBase):
 
         LOG.debug('Telegram: %s', response)
 
-    def status_change(self, alert, status, summary):
+    def status_change(self, alert, status, summary, **kwargs):
         return
