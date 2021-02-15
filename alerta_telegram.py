@@ -83,6 +83,10 @@ class TelegramBot(PluginBase):
         if alert.repeat:
             return
 
+        # Do not send notifications about new (previous severity == indeterminate) immediately closed alerts
+        if alert.status == "closed" and alert.previous_severity == "indeterminate":
+            return
+
         try:
             text = self.template.render(alert.__dict__)
         except UndefinedError:
