@@ -39,6 +39,8 @@ TELEGRAM_PROXY_PASSWORD = app.config.get('TELEGRAM_PROXY_PASSWORD') \
                           or os.environ.get('TELEGRAM_PROXY_PASSWORD')
 TELEGRAM_SOUND_NOTIFICATION_SEVERITY = app.config.get('TELEGRAM_SOUND_NOTIFICATION_SEVERITY') \
                           or os.environ.get('TELEGRAM_SOUND_NOTIFICATION_SEVERITY')
+TELEGRAM_FILTER_NOTIFICATION_SEVERITY = app.config.get('TELEGRAM_FILTER_NOTIFICATION_SEVERITY') \
+                          or os.environ.get('TELEGRAM_FILTER_NOTIFICATION_SEVERITY')
 
 DASHBOARD_URL = app.config.get('DASHBOARD_URL', '') \
                 or os.environ.get('DASHBOARD_URL')
@@ -86,6 +88,11 @@ class TelegramBot(PluginBase):
         # Do not send notifications about new (previous severity == indeterminate) immediately closed alerts
         if alert.status == "closed" and alert.previous_severity == "indeterminate":
             return
+
+        # If filter set - send only needed severities
+        if TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+            if alert.severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                return
 
         try:
             text = self.template.render(alert.__dict__)
