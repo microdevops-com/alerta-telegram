@@ -91,8 +91,12 @@ class TelegramBot(PluginBase):
 
         # If filter set - send only needed severities
         if TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
-            if alert.severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
-                return
+            if alert.status == "closed":
+                if alert.previous_severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                    return
+            else:
+                if alert.severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                    return
 
         try:
             text = self.template.render(alert.__dict__)
