@@ -91,12 +91,29 @@ class TelegramBot(PluginBase):
 
         # If filter set - send only needed severities
         if TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+
+            # By default do not send
+            send_alert = False
+
+            # If alert is closed - previous severity matters
+            # Send only previous severity in list
             if alert.status == "closed":
-                if alert.previous_severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
-                    return
+                if alert.previous_severity in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                    send_alert = True
+
+            # For open alerts
             else:
-                if alert.severity not in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
-                    return
+                # If previous severity in list should be sent
+                if alert.previous_severity in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                    send_alert = True
+
+                # If current severity in list should be send as well
+                if alert.severity in TELEGRAM_FILTER_NOTIFICATION_SEVERITY:
+                    send_alert = True
+            
+            # return (do not send) if send_alert == False
+            if not send_alert:
+                return
 
         try:
             text = self.template.render(alert.__dict__)
