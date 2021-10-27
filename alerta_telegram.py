@@ -81,12 +81,16 @@ class TelegramBot(PluginBase):
         return alert
 
     def post_receive(self, alert, **kwargs):
+        
+        LOG.info('Telegram alert: id: %s, resource: %s, status: %s, severity: %s, previous_severity: %s', alert.id, alert.resource, alert.status, alert.severity, alert.previous_severity)
 
         if alert.repeat:
+            LOG.info('Telegram alert id %s skipped due to alert.repeat', alert.id)
             return
 
         # Do not send notifications about new (previous severity == indeterminate) immediately closed alerts
         if alert.status == "closed" and alert.previous_severity == "indeterminate":
+            LOG.info('Telegram alert id %s skipped due to closed and previous_severity == indeterminate', alert.id)
             return
 
         # If filter set - send only needed severities
@@ -113,6 +117,7 @@ class TelegramBot(PluginBase):
             
             # return (do not send) if send_alert == False
             if not send_alert:
+                LOG.info('Telegram alert id %s skipped due to send_alert == False', alert.id)
                 return
 
         try:
