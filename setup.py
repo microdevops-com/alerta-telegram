@@ -1,7 +1,7 @@
 
 from setuptools import setup, find_packages
 
-version = '5.1.3-sysadmws-3'
+version = '5.1.post3'
 
 setup(
     name="alerta-telegram",
